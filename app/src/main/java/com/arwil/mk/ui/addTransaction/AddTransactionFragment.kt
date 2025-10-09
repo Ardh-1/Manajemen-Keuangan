@@ -12,12 +12,19 @@ import com.arwil.mk.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import android.app.DatePickerDialog
+import com.google.android.material.textfield.TextInputEditText
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class AddTransactionFragment : BottomSheetDialogFragment() {
 
     // Listener untuk mengirim data kembali ke HomeFragment
     var onTransactionAddedListener: ((Transaction) -> Unit)? = null
     private var selectedType = "EXPENSE" // Default
+
+    private val selectedDate = Calendar.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +78,31 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
         val etAmount = view.findViewById<EditText>(R.id.et_amount)
         val etCategory = view.findViewById<EditText>(R.id.et_category)
         val btnSave = view.findViewById<Button>(R.id.btn_save)
+        val etDate = view.findViewById<EditText>(R.id.et_date)
+
+        fun updateDateInView() {
+            val myFormat = "dd/MM/yyyy" // Format tanggal
+            val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
+            etDate.setText(sdf.format(selectedDate.time))
+        }
+
+        // Set tanggal hari ini saat pertama kali dibuka
+        updateDateInView()
+
+        // Buat DatePickerDialog
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            selectedDate.set(Calendar.YEAR, year)
+            selectedDate.set(Calendar.MONTH, monthOfYear)
+            selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            updateDateInView()
+        }
+
+        etDate.setOnClickListener {
+            DatePickerDialog(requireContext(), dateSetListener,
+                selectedDate.get(Calendar.YEAR),
+                selectedDate.get(Calendar.MONTH),
+                selectedDate.get(Calendar.DAY_OF_MONTH)).show()
+        }
 
         btnSave.setOnClickListener {
             val title = etTitle.text.toString()
@@ -78,7 +110,7 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
             val category = etCategory.text.toString()
 
             if (title.isNotEmpty() && amount > 0 && category.isNotEmpty()) {
-                val newTransaction = Transaction(title, category, amount, selectedType)
+                val newTransaction = Transaction(title, category, amount, selectedType, selectedDate.timeInMillis)
                 onTransactionAddedListener?.invoke(newTransaction)
                 dismiss()
             }

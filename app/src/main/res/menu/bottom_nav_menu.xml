@@ -20,5 +20,5 @@
     <item
         android:title="Wallet"
         android:id="@+id/wallet"
-        android:icon="@drawable/ic_me"/>
+        android:icon="@drawable/ic_wallet"/>
 </menu>

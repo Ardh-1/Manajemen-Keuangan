@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arwil.mk.R
 import java.text.NumberFormat
+import java.util.Calendar
 import java.util.Locale
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class HomeFragment : Fragment() {
 
@@ -43,13 +46,14 @@ class HomeFragment : Fragment() {
 
         rvTransactions = view.findViewById(R.id.rv_transactions)
 
-        transactionAdapter = TransactionAdapter(transactionsList) { transactionToDelete ->
+        transactionAdapter = TransactionAdapter(emptyList()) { transactionToDelete ->
             showDeleteConfirmationDialog(transactionToDelete)
         }
 
         rvTransactions.layoutManager = LinearLayoutManager(context)
         rvTransactions.adapter = transactionAdapter
 
+        updateGroupedList()
         calculateAndDisplayTotal(transactionsList)
     }
 
@@ -60,11 +64,8 @@ class HomeFragment : Fragment() {
 
         builder.setPositiveButton("Ya") { dialog, which ->
             val position = transactionsList.indexOf(transactionToDelete)
-            if (position != -1) {
-                transactionsList.removeAt(position)
-                transactionAdapter.notifyItemRemoved(position)
-                calculateAndDisplayTotal(transactionsList)
-            }
+            updateGroupedList()
+            calculateAndDisplayTotal(transactionsList)
         }
 
         builder.setNegativeButton("Tidak") { dialog, which ->
@@ -77,13 +78,17 @@ class HomeFragment : Fragment() {
 
     private fun setupInitialData() {
         // Fungsi baru agar lebih rapi
-        transactionsList.clear() // Bersihkan list sebelum menambahkan data baru
+        transactionsList.clear()
+        val today = Calendar.getInstance().timeInMillis
+        val yesterday = Calendar.getInstance().apply { add(Calendar.DATE, -1) }.timeInMillis
+        val twoDaysAgo = Calendar.getInstance().apply { add(Calendar.DATE, -2) }.timeInMillis
+
         transactionsList.addAll(listOf(
-            Transaction("Gaji Bulan Ini", "Pemasukan", 5000000.0, "INCOME"),
-            Transaction("Makan Siang", "Makanan", 50000.0, "EXPENSE"),
-            Transaction("Beli Bensin", "Transportasi", 100000.0, "EXPENSE"),
-            Transaction("Bonus Proyek", "Pemasukan", 1500000.0, "INCOME"),
-            Transaction("Bayar Listrik", "Tagihan", 350000.0, "EXPENSE")
+            Transaction("Gaji Bulan Ini", "Pemasukan", 5000000.0, "INCOME", today),
+            Transaction("Makan Siang", "Makanan", 50000.0, "EXPENSE", today),
+            Transaction("Beli Bensin", "Transportasi", 100000.0, "EXPENSE", yesterday),
+            Transaction("Bonus Proyek", "Pemasukan", 1500000.0, "INCOME", yesterday),
+            Transaction("Bayar Listrik", "Tagihan", 350000.0, "EXPENSE", twoDaysAgo)
         ))
     }
 
@@ -106,13 +111,53 @@ class HomeFragment : Fragment() {
         tvExpense.text = formatToRupiah(totalExpense)
     }
 
+    private fun updateGroupedList() {
+        val sortedTransactions = transactionsList.sortedByDescending { it.date }
+
+        val groupedByDate = sortedTransactions.groupBy {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = it.date
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+            calendar.time
+        }
+
+        val combinedList = mutableListOf<ListItem>()
+        for ((date, transactions) in groupedByDate) {
+            combinedList.add(ListItem.DateHeader(formatDateHeader(date)))
+            transactions.forEach { transactions ->
+                combinedList.add(ListItem.TransactionItem(transactions))
+            }
+        }
+
+        transactionAdapter.updateData(combinedList)
+    }
+
+    private fun formatDateHeader(date: Date): String {
+        val calendar = Calendar.getInstance()
+        val today = Calendar.getInstance()
+        val yesterday = Calendar.getInstance().apply { add(Calendar.DATE, -1) }
+
+        calendar.time = date
+
+        return when {
+            calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+            calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR) -> "Hari Ini"
+
+            calendar.get(Calendar.YEAR) == yesterday.get(Calendar.YEAR) &&
+            calendar.get(Calendar.DAY_OF_YEAR) == yesterday.get(Calendar.DAY_OF_YEAR) -> "Kemarin"
+
+            else -> SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
+        }
+    }
+
     fun showAddTransactionSheet() {
         val addTransactionFragment = AddTransactionFragment()
-
         addTransactionFragment.onTransactionAddedListener = { newTransaction ->
             transactionsList.add(0, newTransaction)
-            transactionAdapter.notifyItemInserted(0)
-            rvTransactions.scrollToPosition(0)
+            updateGroupedList()
             calculateAndDisplayTotal(transactionsList)
         }
 
