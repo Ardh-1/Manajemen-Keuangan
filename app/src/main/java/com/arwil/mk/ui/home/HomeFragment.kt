@@ -88,7 +88,8 @@ class HomeFragment : Fragment() {
             Transaction("Makan Siang", "Makanan", 50000.0, "EXPENSE", today),
             Transaction("Beli Bensin", "Transportasi", 100000.0, "EXPENSE", yesterday),
             Transaction("Bonus Proyek", "Pemasukan", 1500000.0, "INCOME", yesterday),
-            Transaction("Bayar Listrik", "Tagihan", 350000.0, "EXPENSE", twoDaysAgo)
+            Transaction("Bayar Listrik", "Tagihan", 350000.0, "EXPENSE", twoDaysAgo),
+            Transaction("Beli Pakaian", "Pembelian", 200000.0, "EXPENSE", twoDaysAgo)
         ))
     }
 
