@@ -13,7 +13,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.app.DatePickerDialog
-import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -97,11 +96,23 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
             updateDateInView()
         }
 
-        etDate.setOnClickListener {
-            DatePickerDialog(requireContext(), dateSetListener,
-                selectedDate.get(Calendar.YEAR),
-                selectedDate.get(Calendar.MONTH),
-                selectedDate.get(Calendar.DAY_OF_MONTH)).show()
+        etDate.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                val datePickerDialog = DatePickerDialog(requireContext(), dateSetListener,
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH))
+
+                // Mencegah dialog tertutup saat orientasi layar berubah
+                datePickerDialog.setOnCancelListener {
+                    etDate.clearFocus()
+                }
+                datePickerDialog.setOnDismissListener {
+                    etDate.clearFocus()
+                }
+
+                datePickerDialog.show()
+            }
         }
 
         btnSave.setOnClickListener {
