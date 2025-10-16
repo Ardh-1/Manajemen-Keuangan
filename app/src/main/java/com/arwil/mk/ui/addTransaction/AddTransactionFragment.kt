@@ -1,4 +1,4 @@
-package com.arwil.mk.ui.home
+package com.arwil.mk.ui.addTransaction
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.app.DatePickerDialog
+import com.arwil.mk.ui.home.Transaction
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -37,7 +38,8 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
 
         dialog?.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val bottomSheet =
+                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.let {
                 val behavior = BottomSheetBehavior.from(it)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -89,30 +91,22 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
         updateDateInView()
 
         // Buat DatePickerDialog
-        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-            selectedDate.set(Calendar.YEAR, year)
-            selectedDate.set(Calendar.MONTH, monthOfYear)
-            selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            updateDateInView()
-        }
-
-        etDate.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val datePickerDialog = DatePickerDialog(requireContext(), dateSetListener,
-                    selectedDate.get(Calendar.YEAR),
-                    selectedDate.get(Calendar.MONTH),
-                    selectedDate.get(Calendar.DAY_OF_MONTH))
-
-                // Mencegah dialog tertutup saat orientasi layar berubah
-                datePickerDialog.setOnCancelListener {
-                    etDate.clearFocus()
-                }
-                datePickerDialog.setOnDismissListener {
-                    etDate.clearFocus()
-                }
-
-                datePickerDialog.show()
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, monthOfYear)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                updateDateInView()
             }
+
+        etDate.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(
+                requireContext(), dateSetListener,
+                selectedDate.get(Calendar.YEAR),
+                selectedDate.get(Calendar.MONTH),
+                selectedDate.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
         }
 
         btnSave.setOnClickListener {
@@ -121,7 +115,13 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
             val category = etCategory.text.toString()
 
             if (title.isNotEmpty() && amount > 0 && category.isNotEmpty()) {
-                val newTransaction = Transaction(title, category, amount, selectedType, selectedDate.timeInMillis)
+                val newTransaction = Transaction(
+                    title = title,
+                    category = category,
+                    amount = amount,
+                    type = selectedType,
+                    date = selectedDate.timeInMillis
+                )
                 onTransactionAddedListener?.invoke(newTransaction)
                 dismiss()
             }
