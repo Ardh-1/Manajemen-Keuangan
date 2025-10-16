@@ -15,11 +15,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.fragment.app.Fragment
 import com.arwil.mk.ui.home.HomeFragment
+import com.arwil.mk.ui.charts.ChartsFragment
 
 
 class MainActivity : AppCompatActivity() {
 
     private val homeFragment = HomeFragment()
+    private val chartsFragment = ChartsFragment()
     // private val reportsFragment = ReportsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.nav_home -> setCurrentFragment(homeFragment)
                 // R.id.nav_reports -> setCurrentFragment(reportsFragment)
-                // R.id.nav_charts -> setCurrentFragment(chartsFragment)
+                R.id.nav_charts -> setCurrentFragment(chartsFragment)
                 // R.id.nav_me -> setCurrentFragment(meFragment)
             }
             true

@@ -52,4 +52,5 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
     // Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
