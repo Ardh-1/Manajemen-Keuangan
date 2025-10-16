@@ -14,8 +14,12 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.arwil.mk.ui.addTransaction.AddTransactionFragment
 import com.arwil.mk.ui.home.HomeFragment
 import com.arwil.mk.ui.charts.ChartsFragment
+import com.arwil.mk.ui.home.AppDatabase
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,10 +28,14 @@ class MainActivity : AppCompatActivity() {
     private val chartsFragment = ChartsFragment()
     // private val reportsFragment = ReportsFragment()
 
+    private lateinit var db: AppDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        db = AppDatabase.getDatabase(this)
 
         val contentFrame = findViewById<FrameLayout>(R.id.content_frame)
         val bottomAppBar = findViewById<BottomAppBar>(R.id.bottomAppBar)
@@ -68,7 +76,15 @@ class MainActivity : AppCompatActivity() {
         setCurrentFragment(homeFragment)
 
         fab.setOnClickListener {
-            homeFragment.showAddTransactionSheet()
+            // Sekarang MainActivity yang menampilkan form
+            val addTransactionFragment = AddTransactionFragment()
+            addTransactionFragment.onTransactionAddedListener = { newTransaction ->
+                // MainActivity yang menyimpan ke database
+                lifecycleScope.launch {
+                    db.transactionDao().insertTransaction(newTransaction)
+                }
+            }
+            addTransactionFragment.show(supportFragmentManager, "AddTransactionFragment")
         }
 
         bottomNavView.setOnItemSelectedListener {

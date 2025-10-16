@@ -48,6 +48,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:paddingBottom="4dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@id/card_balance"
         app:layout_constraintStart_toStartOf="@id/card_balance"
@@ -64,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                app:cardElevation="1dp"
                 android:padding="16dp">
 
                 <ImageView
@@ -106,6 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                app:cardElevation="1dp"
                 android:padding="16dp">
 
                 <ImageView
@@ -156,13 +159,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:clipToPadding="false"
         android:paddingHorizontal="16dp"
         android:paddingBottom="88dp"
-        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_transactions"
+        app:layout_constraintVertical_bias="0.0"
         tools:itemCount="15"
         tools:listitem="@layout/item_transaction" />
 

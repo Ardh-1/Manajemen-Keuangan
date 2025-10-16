@@ -155,15 +155,4 @@ class HomeFragment : Fragment() {
             else -> SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(date)
         }
     }
-
-    fun showAddTransactionSheet() {
-        val addTransactionFragment = AddTransactionFragment()
-        addTransactionFragment.onTransactionAddedListener = { newTransaction ->
-            // Simpan transaksi baru ke database di background thread
-            lifecycleScope.launch {
-                transactionDao.insertTransaction(newTransaction)
-            }
-        }
-        addTransactionFragment.show(parentFragmentManager, "AddTransactionFragment")
-    }
 }
