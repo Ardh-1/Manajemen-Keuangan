@@ -29,7 +29,7 @@ class TransactionAdapter(
         val category: TextView = view.findViewById(R.id.tv_transaction_category)
         val amount: TextView = view.findViewById(R.id.tv_transaction_amount)
         val deleteButton: ImageView = view.findViewById(R.id.iv_delete)
-        // val icon: ImageView = view.findViewById(R.id.iv_transaction_icon) // Jika perlu
+        val icon: ImageView = view.findViewById(R.id.iv_transaction_icon)
     }
 
     // Fungsi ini menentukan tipe view pada posisi tertentu
@@ -62,6 +62,27 @@ class TransactionAdapter(
                 val transaction = currentItem.transaction
                 transactionHolder.title.text = transaction.title
                 transactionHolder.category.text = transaction.category
+
+                val iconResId = when (transaction.category) {
+                    // Kategori Expense
+                    "Makanan" -> R.drawable.ic_food
+                    "Transport" -> R.drawable.ic_transport
+                    "Tagihan" -> R.drawable.ic_bill
+                    "Belanja" -> R.drawable.ic_shopping
+                    "Hiburan" -> R.drawable.ic_entertainment
+                    "Kesehatan" -> R.drawable.ic_health
+
+                    // Kategori Income
+                    "Gaji" -> R.drawable.ic_salary
+                    "Bonus" -> R.drawable.ic_bonus
+                    "Hadiah" -> R.drawable.ic_gift
+
+                    // Kategori default jika tidak ada yang cocok
+                    else -> R.drawable.ic_other
+                }
+
+                // Atur ikon pada ImageView
+                transactionHolder.icon.setImageResource(iconResId)
 
                 val context = holder.itemView.context
                 if (transaction.type == "INCOME") {

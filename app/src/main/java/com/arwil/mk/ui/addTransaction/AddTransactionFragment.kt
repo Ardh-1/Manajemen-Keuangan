@@ -23,8 +23,9 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
     // Listener untuk mengirim data kembali ke HomeFragment
     var onTransactionAddedListener: ((Transaction) -> Unit)? = null
     private var selectedType = "EXPENSE" // Default
-
     private val selectedDate = Calendar.getInstance()
+    private var selectedCategoryName: String = ""
+    private lateinit var etCategory: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +52,17 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
         val viewIncomeBg = view.findViewById<View>(R.id.view_income_bg)
         val viewExpenseBg = view.findViewById<View>(R.id.view_expense_bg)
 
+        etCategory = view.findViewById<EditText>(R.id.et_category)
+
         // Fungsi untuk update UI Tab
         fun updateTabs(type: String) {
+            if (selectedType == type) return
+
             selectedType = type
+
+            etCategory.setText("")
+            selectedCategoryName = ""
+
             if (type == "INCOME") {
                 viewIncomeBg.visibility = View.VISIBLE
                 viewExpenseBg.visibility = View.INVISIBLE
@@ -109,15 +118,24 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
             datePickerDialog.show()
         }
 
+        etCategory.setOnClickListener {
+            val categoryPicker = CategoryPickerFragment.newInstance(selectedType)
+            categoryPicker.onCategorySelectedListener = { category ->
+                etCategory.setText(category.name)
+                selectedCategoryName = category.name
+            }
+            categoryPicker.show(parentFragmentManager, "CategoryPicker")
+        }
+
         btnSave.setOnClickListener {
             val title = etTitle.text.toString()
             val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
-            val category = etCategory.text.toString()
+            // val category = etCategory.text.toString()
 
-            if (title.isNotEmpty() && amount > 0 && category.isNotEmpty()) {
+            if (title.isNotEmpty() && amount > 0 && selectedCategoryName.isNotEmpty()) {
                 val newTransaction = Transaction(
                     title = title,
-                    category = category,
+                    category = selectedCategoryName,
                     amount = amount,
                     type = selectedType,
                     date = selectedDate.timeInMillis
