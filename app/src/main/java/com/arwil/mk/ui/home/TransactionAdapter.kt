@@ -15,7 +15,7 @@ private const val VIEW_TYPE_TRANSACTION = 1
 
 class TransactionAdapter(
     private var items: List<ListItem>, // Terima List dari sealed class
-    private val onDeleteClick: (Transaction) -> Unit
+    private val onItemClick: (Transaction) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     // ViewHolder untuk menampilkan tanggal
@@ -28,7 +28,6 @@ class TransactionAdapter(
         val title: TextView = view.findViewById(R.id.tv_transaction_title)
         val category: TextView = view.findViewById(R.id.tv_transaction_category)
         val amount: TextView = view.findViewById(R.id.tv_transaction_amount)
-        val deleteButton: ImageView = view.findViewById(R.id.iv_delete)
         val icon: ImageView = view.findViewById(R.id.iv_transaction_icon)
     }
 
@@ -93,8 +92,8 @@ class TransactionAdapter(
                     transactionHolder.amount.setTextColor(ContextCompat.getColor(context, R.color.red))
                 }
 
-                transactionHolder.deleteButton.setOnClickListener {
-                    onDeleteClick(transaction)
+                transactionHolder.itemView.setOnClickListener {
+                    onItemClick(transaction)
                 }
             }
         }

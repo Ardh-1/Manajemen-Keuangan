@@ -58,8 +58,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        transactionAdapter = TransactionAdapter(emptyList()) { transactionToDelete ->
-            showDeleteConfirmationDialog(transactionToDelete)
+        transactionAdapter = TransactionAdapter(emptyList()) { selectedTransaction ->
+            showEditTransactionSheet(selectedTransaction)
         }
         rvTransactions.layoutManager = LinearLayoutManager(context)
         rvTransactions.adapter = transactionAdapter
@@ -73,19 +73,7 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun showDeleteConfirmationDialog(transactionToDelete: Transaction) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Konfirmasi Hapus")
-            .setMessage("Apakah Anda yakin ingin menghapus transaksi '${transactionToDelete.title}'?")
-            .setPositiveButton("Ya") { _, _ ->
-                // Hapus data dari database di background thread
-                lifecycleScope.launch {
-                    transactionDao.deleteTransaction(transactionToDelete)
-                }
-            }
-            .setNegativeButton("Tidak", null)
-            .show()
-    }
+
 
     // Fungsi ini sekarang hanya untuk mengisi data awal jika database kosong
     private fun insertInitialData() {
@@ -102,6 +90,25 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun showEditTransactionSheet(transaction: Transaction) {
+        val editFragment = EditTransactionFragment.newInstance(transaction)
+
+        // Atur apa yang terjadi saat transaksi di-update
+        editFragment.onTransactionUpdated = { updatedTransaction ->
+            lifecycleScope.launch {
+                transactionDao.updateTransaction(updatedTransaction)
+            }
+        }
+
+        // Atur apa yang terjadi saat transaksi dihapus
+        editFragment.onTransactionDeleted = { transactionToDelete ->
+            lifecycleScope.launch {
+                transactionDao.deleteTransaction(transactionToDelete)
+            }
+        }
+
+        editFragment.show(parentFragmentManager, "EditTransactionFragment")
+    }
 
     private fun calculateAndDisplayTotal(transactions: List<Transaction>) {
         val totalIncome = transactions.filter { it.type == "INCOME" }.sumOf { it.amount }

@@ -13,10 +13,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.app.DatePickerDialog
+import android.text.Editable
 import com.arwil.mk.ui.home.Transaction
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import android.text.TextWatcher
 
 class AddTransactionFragment : BottomSheetDialogFragment() {
 
@@ -90,6 +93,42 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
         val btnSave = view.findViewById<Button>(R.id.btn_save)
         val etDate = view.findViewById<EditText>(R.id.et_date)
 
+        etAmount.addTextChangedListener(object : TextWatcher {
+            private var current = ""
+            private val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable) {
+                if (s.toString() != current) {
+                    // 1. Hapus listener untuk sementara agar tidak terjadi loop tak terbatas
+                    etAmount.removeTextChangedListener(this)
+
+                    // 2. Hapus semua titik/koma untuk mendapatkan angka bersih
+                    val cleanString = s.toString().replace("[.,]".toRegex(), "")
+
+                    if (cleanString.isNotEmpty()) {
+                        try {
+                            // 3. Ubah string bersih menjadi angka, lalu format kembali dengan titik
+                            val parsed = cleanString.toDouble()
+                            val formatted = formatter.format(parsed)
+                            current = formatted
+                            etAmount.setText(formatted)
+                            etAmount.setSelection(formatted.length)
+                        } catch (e: NumberFormatException) {
+                            // Jika terjadi error, biarkan saja
+                        }
+                    } else {
+                        current = ""
+                    }
+
+                    // 4. Tambahkan kembali listener
+                    etAmount.addTextChangedListener(this)
+                }
+            }
+        })
+
         fun updateDateInView() {
             val myFormat = "dd/MM/yyyy" // Format tanggal
             val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
@@ -129,8 +168,9 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
 
         btnSave.setOnClickListener {
             val title = etTitle.text.toString()
-            val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
-            // val category = etCategory.text.toString()
+            val amountString = etAmount.text.toString().replace(".", "")
+            val amount = amountString.toDoubleOrNull() ?: 0.0
+
 
             if (title.isNotEmpty() && amount > 0 && selectedCategoryName.isNotEmpty()) {
                 val newTransaction = Transaction(

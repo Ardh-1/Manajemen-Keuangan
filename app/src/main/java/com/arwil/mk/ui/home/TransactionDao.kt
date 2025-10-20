@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface TransactionDao {
@@ -13,6 +14,9 @@ interface TransactionDao {
     // dengan primary key yang sama, data lama akan diganti.
     @Insert
     suspend fun insertTransaction(transaction: Transaction)
+
+    @Update
+    suspend fun updateTransaction(transaction: Transaction)
 
     // Menghapus transaksi
     @Delete
