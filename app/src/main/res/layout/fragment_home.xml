@@ -141,18 +141,53 @@
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/month_selector_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@id/layout_summary"
+        app:layout_constraintStart_toStartOf="@id/layout_summary"
+        app:layout_constraintTop_toBottomOf="@id/layout_summary">
+
+        <ImageView
+            android:id="@+id/iv_prev_month"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_chevron_left"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <TextView
+            android:id="@+id/tv_current_month"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Oktober 2025" />
+
+        <ImageView
+            android:id="@+id/iv_next_month"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_chevron_right"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_title_transactions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Transaksi Terakhir"
+        android:layout_marginTop="16dp" android:text="Transaksi"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/layout_summary"
-        app:layout_constraintTop_toBottomOf="@id/layout_summary" />
-
+        app:layout_constraintTop_toBottomOf="@id/month_selector_layout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_transactions"
