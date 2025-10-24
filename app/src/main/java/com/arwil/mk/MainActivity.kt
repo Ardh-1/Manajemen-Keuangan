@@ -20,13 +20,14 @@ import com.arwil.mk.ui.home.HomeFragment
 import com.arwil.mk.ui.charts.ChartsFragment
 import com.arwil.mk.ui.home.AppDatabase
 import kotlinx.coroutines.launch
+import com.arwil.mk.ui.reports.ReportsFragment
 
 
 class MainActivity : AppCompatActivity() {
 
     private val homeFragment = HomeFragment()
     private val chartsFragment = ChartsFragment()
-    // private val reportsFragment = ReportsFragment()
+    private val reportsFragment = ReportsFragment()
 
     private lateinit var db: AppDatabase
 
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_home -> setCurrentFragment(homeFragment)
-                // R.id.nav_reports -> setCurrentFragment(reportsFragment)
+                R.id.nav_reports -> setCurrentFragment(reportsFragment)
                 R.id.nav_charts -> setCurrentFragment(chartsFragment)
                 // R.id.nav_me -> setCurrentFragment(meFragment)
             }

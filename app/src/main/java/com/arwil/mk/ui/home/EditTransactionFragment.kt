@@ -112,7 +112,16 @@ class EditTransactionFragment : BottomSheetDialogFragment() {
 
         btnDelete.setOnClickListener {
             onTransactionDeleted?.invoke(transaction)
-            dismiss()
+            android.app.AlertDialog.Builder(requireContext())
+                .setTitle("Konfirmasi Hapus")
+                .setMessage("Apakah Anda yakin ingin menghapus transaksi '${transaction.title}'?")
+                .setPositiveButton("Ya, Hapus") { _, _ ->
+                    // Jika pengguna menekan "Ya", jalankan aksi hapus
+                    onTransactionDeleted?.invoke(transaction)
+                    dismiss() // Tutup bottom sheet setelah menghapus
+                }
+                .setNegativeButton("Batal", null) // "Batal" tidak melakukan apa-apa
+                .show()
         }
     }
 }

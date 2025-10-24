@@ -151,7 +151,7 @@ class ChartsFragment : Fragment() {
             setHoleColor(Color.TRANSPARENT)
             setDrawEntryLabels(false)
             centerText = totalAmount.toRupiahFormat()
-            setCenterTextSize(22f)
+            setCenterTextSize(18f)
             setCenterTextColor(Color.BLACK)
             animateY(700)
             invalidate()
