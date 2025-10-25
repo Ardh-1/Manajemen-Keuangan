@@ -12,6 +12,9 @@ import java.text.NumberFormat
 import java.util.Locale
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import com.arwil.mk.ui.wallet.Account
 
 class EditTransactionFragment : BottomSheetDialogFragment() {
 
@@ -20,6 +23,10 @@ class EditTransactionFragment : BottomSheetDialogFragment() {
     var onTransactionDeleted: ((Transaction) -> Unit)? = null
 
     private lateinit var transaction: Transaction
+    private lateinit var db: AppDatabase
+    private var accountList: List<Account> = emptyList()
+    private var selectedAccountId: Long = -1L
+
 
     companion object {
         private const val ARG_TRANSACTION = "transaction"
@@ -35,9 +42,10 @@ class EditTransactionFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Ambil data transaksi dari argumen
+        db = AppDatabase.getDatabase(requireContext()) // <-- BARU
         arguments?.let {
             transaction = it.getParcelable(ARG_TRANSACTION)!!
+            selectedAccountId = transaction.accountId // <-- BARU: Simpan ID awal
         }
     }
 
@@ -53,6 +61,7 @@ class EditTransactionFragment : BottomSheetDialogFragment() {
 
         val etTitle = view.findViewById<EditText>(R.id.et_edit_title)
         val etAmount = view.findViewById<EditText>(R.id.et_edit_amount)
+        val etAccount = view.findViewById<AutoCompleteTextView>(R.id.et_edit_account)
         val btnUpdate = view.findViewById<Button>(R.id.btn_update)
         val btnDelete = view.findViewById<Button>(R.id.btn_delete)
 
@@ -92,6 +101,8 @@ class EditTransactionFragment : BottomSheetDialogFragment() {
             }
         })
 
+        setupAccountDropdown(etAccount)
+
         // (Anda bisa menambahkan TextWatcher untuk format angka di sini jika mau)
 
         btnUpdate.setOnClickListener {
@@ -99,11 +110,12 @@ class EditTransactionFragment : BottomSheetDialogFragment() {
             val updatedAmountString = etAmount.text.toString().replace(".", "")
             val updatedAmount = updatedAmountString.toDoubleOrNull() ?: transaction.amount
 
-            if (updatedTitle.isNotEmpty()) {
-                // Buat objek transaksi baru dengan data yang diperbarui
+            if (updatedTitle.isNotEmpty() && selectedAccountId != -1L) {
                 val updatedTransaction = transaction.copy(
+                    accountId = selectedAccountId, // <-- Perbarui ID Akun
                     title = updatedTitle,
                     amount = updatedAmount
+                    // Anda bisa tambahkan edit kategori/tanggal di sini jika mau
                 )
                 onTransactionUpdated?.invoke(updatedTransaction)
                 dismiss()
@@ -122,6 +134,30 @@ class EditTransactionFragment : BottomSheetDialogFragment() {
                 }
                 .setNegativeButton("Batal", null) // "Batal" tidak melakukan apa-apa
                 .show()
+        }
+    }
+
+    private fun setupAccountDropdown(etAccount: AutoCompleteTextView) {
+        db.accountDao().getAllAccounts().observe(viewLifecycleOwner, { accounts ->
+            accountList = accounts
+            val accountNames = accounts.map { it.name }
+            val adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                accountNames
+            )
+            etAccount.setAdapter(adapter)
+
+            // LANGKAH PENTING: Tampilkan akun yang sudah dipilih
+            val currentAccount = accounts.find { it.id == transaction.accountId }
+            if (currentAccount != null) {
+                etAccount.setText(currentAccount.name, false) // false agar tidak memicu dropdown
+            }
+        })
+
+        etAccount.setOnItemClickListener { parent, _, position, _ ->
+            val selectedName = parent.getItemAtPosition(position) as String
+            selectedAccountId = accountList.find { it.name == selectedName }?.id ?: -1L
         }
     }
 }

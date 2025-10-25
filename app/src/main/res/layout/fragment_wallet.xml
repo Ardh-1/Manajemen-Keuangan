@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F2F2">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_net_assets"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tv_net_assets_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Net Assets"
+                android:alpha="0.7"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_net_assets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_net_assets_label"
+                tools:text="Rp 0" />
+
+            <TextView
+                android:id="@+id/tv_assets_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Assets"
+                android:alpha="0.7"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_net_assets"
+                android:layout_marginTop="16dp"/>
+
+            <TextView
+                android:id="@+id/tv_assets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/green"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_assets_label"
+                tools:text="Rp 0" />
+
+            <TextView
+                android:id="@+id/tv_debts_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Debts"
+                android:alpha="0.7"
+                app:layout_constraintStart_toStartOf="@id/guideline_vertical_50"
+                app:layout_constraintTop_toTopOf="@id/tv_assets_label" />
+
+            <TextView
+                android:id="@+id/tv_debts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/guideline_vertical_50"
+                app:layout_constraintTop_toBottomOf="@id/tv_debts_label"
+                tools:text="Rp 0" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical_50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_account"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="0dp"
+        android:layout_height="49dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="10dp"
+        android:text="Tambah Akun/Dompet Baru"
+        app:icon="@drawable/ic_add"
+        app:iconSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_net_assets" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_accounts"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="88dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_add_account"
+        tools:listitem="@layout/item_account" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

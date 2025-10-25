@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.arwil.mk.ui.wallet.Account
 
-@Database(entities = [Transaction::class], version = 1, exportSchema = false)
+@Database(entities = [Transaction::class, Account::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun transactionDao(): TransactionDao
+    abstract fun accountDao(): AccountDao
 
     companion object {
         @Volatile
@@ -20,7 +22,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "transaction_database"
-                ).build()
+                )
+                .fallbackToDestructiveMigration()
+                .build()
                 INSTANCE = instance
                 instance
             }

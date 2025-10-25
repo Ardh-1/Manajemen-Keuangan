@@ -21,6 +21,9 @@ import com.arwil.mk.ui.charts.ChartsFragment
 import com.arwil.mk.ui.home.AppDatabase
 import kotlinx.coroutines.launch
 import com.arwil.mk.ui.reports.ReportsFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import com.arwil.mk.ui.wallet.WalletFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val homeFragment = HomeFragment()
     private val chartsFragment = ChartsFragment()
     private val reportsFragment = ReportsFragment()
+    private val walletFragment = WalletFragment()
 
     private lateinit var db: AppDatabase
 
@@ -83,6 +87,10 @@ class MainActivity : AppCompatActivity() {
                 // MainActivity yang menyimpan ke database
                 lifecycleScope.launch {
                     db.transactionDao().insertTransaction(newTransaction)
+                    withContext(Dispatchers.Main) {
+                        // 3. SECARA PROGRAMATIK PINDAH KE TAB HOME
+                        bottomNavView.selectedItemId = R.id.nav_home
+                    }
                 }
             }
             addTransactionFragment.show(supportFragmentManager, "AddTransactionFragment")
@@ -93,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home -> setCurrentFragment(homeFragment)
                 R.id.nav_reports -> setCurrentFragment(reportsFragment)
                 R.id.nav_charts -> setCurrentFragment(chartsFragment)
-                // R.id.nav_me -> setCurrentFragment(meFragment)
+                R.id.wallet -> setCurrentFragment(walletFragment)
             }
             true
         }

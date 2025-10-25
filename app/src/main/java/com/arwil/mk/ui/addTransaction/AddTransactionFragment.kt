@@ -20,15 +20,23 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import android.text.TextWatcher
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import com.arwil.mk.ui.wallet.Account
+import com.arwil.mk.ui.home.AppDatabase
 
 class AddTransactionFragment : BottomSheetDialogFragment() {
 
     // Listener untuk mengirim data kembali ke HomeFragment
     var onTransactionAddedListener: ((Transaction) -> Unit)? = null
     private var selectedType = "EXPENSE" // Default
-    private val selectedDate = Calendar.getInstance()
     private var selectedCategoryName: String = ""
+    private val selectedDate = Calendar.getInstance()
+    private lateinit var db: AppDatabase
+    private var accountList: List<Account> = emptyList()
+    private var selectedAccountId: Long = -1L
     private lateinit var etCategory: EditText
+    private lateinit var etAccount: AutoCompleteTextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +47,8 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        db = AppDatabase.getDatabase(requireContext())
 
         dialog?.setOnShowListener {
             val bottomSheetDialog = it as BottomSheetDialog
@@ -55,16 +65,18 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
         val viewIncomeBg = view.findViewById<View>(R.id.view_income_bg)
         val viewExpenseBg = view.findViewById<View>(R.id.view_expense_bg)
 
-        etCategory = view.findViewById<EditText>(R.id.et_category)
+        etCategory = view.findViewById(R.id.et_category)
+        etAccount = view.findViewById(R.id.et_account)
 
         // Fungsi untuk update UI Tab
         fun updateTabs(type: String) {
             if (selectedType == type) return
-
             selectedType = type
 
             etCategory.setText("")
             selectedCategoryName = ""
+            etAccount.setText("")
+            selectedAccountId = -1L
 
             if (type == "INCOME") {
                 viewIncomeBg.visibility = View.VISIBLE
@@ -129,6 +141,8 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
             }
         })
 
+        setupAccountDropdown()
+
         fun updateDateInView() {
             val myFormat = "dd/MM/yyyy" // Format tanggal
             val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
@@ -171,18 +185,38 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
             val amountString = etAmount.text.toString().replace(".", "")
             val amount = amountString.toDoubleOrNull() ?: 0.0
 
-
-            if (title.isNotEmpty() && amount > 0 && selectedCategoryName.isNotEmpty()) {
-                val newTransaction = Transaction(
-                    title = title,
-                    category = selectedCategoryName,
-                    amount = amount,
-                    type = selectedType,
-                    date = selectedDate.timeInMillis
-                )
+            // Tambahkan validasi untuk selectedAccountId
+            if (title.isNotEmpty() && amount > 0 && selectedCategoryName.isNotEmpty() && selectedAccountId != -1L) {
+                val newTransaction =
+                    Transaction(
+                        accountId = selectedAccountId, // <-- WAJIB ADA
+                        title = title,
+                        category = selectedCategoryName,
+                        amount = amount,
+                        type = selectedType,
+                        date = selectedDate.timeInMillis
+                    )
                 onTransactionAddedListener?.invoke(newTransaction)
                 dismiss()
             }
+        }
+    }
+
+    private fun setupAccountDropdown() {
+        db.accountDao().getAllAccounts().observe(viewLifecycleOwner, { accounts ->
+            accountList = accounts
+            val accountNames = accounts.map { it.name }
+            val adapter = ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line,
+                accountNames
+            )
+            etAccount.setAdapter(adapter)
+        })
+
+        etAccount.setOnItemClickListener { parent, _, position, _ ->
+            val selectedName = parent.getItemAtPosition(position) as String
+            selectedAccountId = accountList.find { it.name == selectedName }?.id ?: -1L
         }
     }
 }

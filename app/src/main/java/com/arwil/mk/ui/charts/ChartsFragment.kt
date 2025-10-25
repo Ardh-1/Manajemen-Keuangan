@@ -81,7 +81,7 @@ class ChartsFragment : Fragment() {
 
     private fun updateUI() {
         // Ganti judul berdasarkan tipe yang dipilih
-        tvChartTitle.text = if (currentChartType == "INCOME") "Statistik Pemasukan" else "Statistik Pengeluaran"
+        tvChartTitle.text = if (currentChartType == "INCOME") "Statistik Pemasukan Bulanan" else "Statistik Pengeluaran Bulanan"
 
         // Filter data sesuai tipe dan bulan ini
         val cal = Calendar.getInstance()

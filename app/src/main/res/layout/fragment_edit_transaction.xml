@@ -51,6 +51,19 @@
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_marginTop="12dp">
+            <AutoCompleteTextView
+                android:id="@+id/et_edit_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pilih Akun/Dompet"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_update"
             style="@style/Widget.MaterialComponents.Button"
