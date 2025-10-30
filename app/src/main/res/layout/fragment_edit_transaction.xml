@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".ui.home.EditTransactionFragment">
+    tools:context=".ui.home.EditTransactionFragment"
+    android:background="@color/bgColor">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,7 +13,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:text="Edit Transaksi"
-        android:textColor="@color/black"
+        android:textColor="@color/text1"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -20,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:background="@color/bgColor">
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -71,7 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:padding="12dp"
-            android:text="Update Transaksi" />
+            android:text="Update Transaksi"
+            android:textColor="@color/white"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_delete"

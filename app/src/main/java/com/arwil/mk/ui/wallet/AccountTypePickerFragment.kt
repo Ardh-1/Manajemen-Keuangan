@@ -23,8 +23,8 @@ class AccountTypePickerFragment : BottomSheetDialogFragment() {
         // Nanti Anda bisa isi daftar ini
         val types = listOf(
             AccountType("Tunai", R.drawable.ic_wallet),
-            AccountType("Bank", R.drawable.ic_home), // Ganti dengan ikon bank
-            AccountType("E-Wallet", R.drawable.ic_charts), // Ganti dengan ikon e-wallet
+            AccountType("Bank", R.drawable.ic_bank), // Ganti dengan ikon bank
+            AccountType("E-Wallet", R.drawable.ic_e_wallet), // Ganti dengan ikon e-wallet
             AccountType("Lainnya", R.drawable.ic_other)
         )
 

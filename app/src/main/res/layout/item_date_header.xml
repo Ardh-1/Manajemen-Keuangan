@@ -9,5 +9,5 @@
     android:paddingEnd="16dp"
     android:text="Hari Ini"
     android:textStyle="bold"
-    android:textColor="@color/black"
+    android:textColor="@color/text1"
     android:textSize="16sp" />

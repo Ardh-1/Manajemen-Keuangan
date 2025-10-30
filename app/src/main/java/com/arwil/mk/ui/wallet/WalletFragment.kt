@@ -27,6 +27,8 @@ class WalletFragment : Fragment() {
     private lateinit var tvNetAssets: TextView
     private lateinit var tvAssets: TextView
     private lateinit var tvDebts: TextView
+    private lateinit var assetAdapter: AccountAdapter // <-- Ubah
+    private lateinit var debtAdapter: AccountAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,14 +46,12 @@ class WalletFragment : Fragment() {
         tvAssets = view.findViewById(R.id.tv_assets)
         tvDebts = view.findViewById(R.id.tv_debts)
 
-        val rvAccounts = view.findViewById<RecyclerView>(R.id.rv_accounts)
         val btnAddAccount = view.findViewById<Button>(R.id.btn_add_account)
+        val rvAssetAccounts = view.findViewById<RecyclerView>(R.id.rv_asset_accounts)
+        val rvDebtAccounts = view.findViewById<RecyclerView>(R.id.rv_debt_accounts)
 
-        setupRecyclerView(rvAccounts)
+        setupRecyclerViews(rvAssetAccounts, rvDebtAccounts)
         observeData()
-
-        rvAccounts.layoutManager = LinearLayoutManager(requireContext())
-        rvAccounts.adapter = accountAdapter
 
         // Tampilkan sheet untuk tambah akun
         btnAddAccount.setOnClickListener {
@@ -60,12 +60,20 @@ class WalletFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView(rvAccounts: RecyclerView) {
-        accountAdapter = AccountAdapter(emptyList()) { selectedAccount ->
+    private fun setupRecyclerViews(rvAsset: RecyclerView, rvDebt: RecyclerView) {
+        // Setup adapter Aset
+        assetAdapter = AccountAdapter(emptyList()) { selectedAccount ->
             showEditAccountSheet(selectedAccount)
         }
-        rvAccounts.layoutManager = LinearLayoutManager(requireContext())
-        rvAccounts.adapter = accountAdapter
+        rvAsset.layoutManager = LinearLayoutManager(requireContext())
+        rvAsset.adapter = assetAdapter
+
+        // Setup adapter Hutang
+        debtAdapter = AccountAdapter(emptyList()) { selectedAccount ->
+            showEditAccountSheet(selectedAccount)
+        }
+        rvDebt.layoutManager = LinearLayoutManager(requireContext())
+        rvDebt.adapter = debtAdapter
     }
 
     private fun showEditAccountSheet(account: Account) {
@@ -112,23 +120,32 @@ class WalletFragment : Fragment() {
                 }
             }
 
-        // 2. Hitung saldo akhir untuk setiap akun
-        val finalBalances = latestAccounts.map { account ->
-            account.initialBalance + (transactionTotals[account.id] ?: 0.0)
-        }
+        // 2. Hitung total saldo untuk *semua* akun
+        val accountBalances = latestAccounts.associateBy(
+            { it.id }, // Key: ID Akun
+            { account -> // Value: Saldo Akhir
+                // Saldo dinamis = Saldo Awal + Perubahan Transaksi
+                val netChange = transactionTotals[account.id] ?: 0.0
+                account.initialBalance + netChange
+            }
+        )
 
-        // 3. Hitung Aset, Hutang, dan Aset Bersih
-        val totalAssets = finalBalances.filter { it > 0 }.sum()
-        // Saldo negatif adalah hutang, sum() akan menjumlahkan angka negatif
-        val totalDebts = finalBalances.filter { it < 0 }.sum()
+        // 3. Hitung Aset (semua saldo positif) dan Hutang (semua saldo negatif)
+        val totalAssets = accountBalances.values.filter { it >= 0 }.sum()
+        val totalDebts = accountBalances.values.filter { it < 0 }.sum()
         val netAssets = totalAssets + totalDebts // (misal: 1000 + (-300) = 700)
 
-        // 4. Perbarui TextView di kartu atas
+        // 4. Update kartu Net Assets
         tvNetAssets.text = netAssets.toRupiahFormat()
         tvAssets.text = totalAssets.toRupiahFormat()
-        // Gunakan .abs() agar tidak ada tanda minus di tampilan hutang
         tvDebts.text = abs(totalDebts).toRupiahFormat()
-        // 5. Kirim data baru ke adapter
-        accountAdapter.updateData(latestAccounts, transactionTotals)
+
+        // 5. === Pisahkan daftar untuk DUA ADAPTER ===
+        val assetList = latestAccounts.filter { !it.isDebtAccount }
+        val debtList = latestAccounts.filter { it.isDebtAccount }
+
+        // 6. Update kedua adapter
+        assetAdapter.updateData(assetList, transactionTotals)
+        debtAdapter.updateData(debtList, transactionTotals)
     }
 }

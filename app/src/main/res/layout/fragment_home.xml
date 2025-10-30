@@ -5,7 +5,7 @@
     android:id="@+id/home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F2"
+    android:background="@color/bgColor"
     tools:context="ui.home.HomeFragment">
 
     <com.google.android.material.card.MaterialCardView
@@ -24,20 +24,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:background="@color/elemen1">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.7"
                 android:text="Total Saldo"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/tv_total_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/text1"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 tools:text="Rp 6.000.000" />
@@ -67,7 +68,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 app:cardElevation="1dp"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:background="@color/elemen1">
 
                 <ImageView
                     android:layout_width="32dp"
@@ -110,7 +112,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 app:cardElevation="1dp"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:background="@color/elemen1">
 
                 <ImageView
                     android:layout_width="32dp"
@@ -158,7 +161,8 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_chevron_left"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/text1" />
 
         <TextView
             android:id="@+id/tv_current_month"
@@ -166,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@color/black"
+            android:textColor="@color/text1"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:text="Oktober 2025" />
@@ -176,15 +180,17 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_chevron_right"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/text1"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/tv_title_transactions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" android:text="Transaksi"
-        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:text="Transaksi"
+        android:textColor="@color/text1"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/layout_summary"

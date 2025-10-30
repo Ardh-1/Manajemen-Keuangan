@@ -23,5 +23,9 @@ interface AccountDao {
     @Query("SELECT * FROM accounts ORDER BY name ASC")
     fun getAllAccounts(): LiveData<List<Account>>
 
-    // Kita akan butuh fungsi lain nanti, tapi ini cukup untuk sekarang
+    @Query("SELECT * FROM accounts")
+    fun getAllAccountsAsList(): List<Account>
+
+    @Query("SELECT * FROM accounts WHERE isDebtAccount = 0 ORDER BY name ASC")
+    fun getAssetAccounts(): LiveData<List<Account>>
 }

@@ -24,15 +24,39 @@ import com.arwil.mk.ui.reports.ReportsFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.arwil.mk.ui.wallet.WalletFragment
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 
 
 class MainActivity : AppCompatActivity() {
-
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Izin diberikan
+        } else {
+            // Izin ditolak
+        }
+    }
     private val homeFragment = HomeFragment()
     private val chartsFragment = ChartsFragment()
     private val reportsFragment = ReportsFragment()
     private val walletFragment = WalletFragment()
-
+    private fun askNotificationPermission() {
+        // Hanya untuk Android 13 (Tiramisu) ke atas
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED) {
+                // Minta izin
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
     private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,17 +65,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         db = AppDatabase.getDatabase(this)
+        askNotificationPermission()
 
         val contentFrame = findViewById<FrameLayout>(R.id.content_frame)
         val bottomAppBar = findViewById<BottomAppBar>(R.id.bottomAppBar)
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottomNavView)
         val fab = findViewById<FloatingActionButton>(R.id.fab)
-
-        //
-
-        //
-
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

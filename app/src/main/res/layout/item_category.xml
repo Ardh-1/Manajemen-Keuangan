@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,6 +15,7 @@
         android:id="@+id/iv_category_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        app:tint="@color/text1"
         tools:src="@drawable/ic_food" />
 
     <TextView
@@ -22,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textSize="12sp"
-        android:textColor="@color/black"
+        android:textColor="@color/text1"
         tools:text="Makanan" />
 
 </LinearLayout>

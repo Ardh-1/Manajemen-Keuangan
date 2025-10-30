@@ -152,7 +152,7 @@ class ChartsFragment : Fragment() {
             setDrawEntryLabels(false)
             centerText = totalAmount.toRupiahFormat()
             setCenterTextSize(18f)
-            setCenterTextColor(Color.BLACK)
+            setCenterTextColor(ContextCompat.getColor(requireContext(), R.color.text1))
             animateY(700)
             invalidate()
         }

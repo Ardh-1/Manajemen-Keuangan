@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.arwil.mk.ui.wallet.Account
 
-@Database(entities = [Transaction::class, Account::class], version = 3, exportSchema = false)
+@Database(entities = [Transaction::class, Account::class], version = 5, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun transactionDao(): TransactionDao

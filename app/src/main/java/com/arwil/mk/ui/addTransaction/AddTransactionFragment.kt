@@ -75,21 +75,19 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
 
             etCategory.setText("")
             selectedCategoryName = ""
-            etAccount.setText("")
-            selectedAccountId = -1L
 
             if (type == "INCOME") {
-                viewIncomeBg.visibility = View.VISIBLE
-                viewExpenseBg.visibility = View.INVISIBLE
+                viewExpenseBg.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.bgColor))
+                viewIncomeBg.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.blue_light))
 
                 tabIncome.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                tabExpense.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                tabExpense.setTextColor(ContextCompat.getColor(requireContext(), R.color.text1))
             } else { // EXPENSE
-                viewExpenseBg.visibility = View.VISIBLE
-                viewIncomeBg.visibility = View.INVISIBLE
+                viewExpenseBg.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
+                viewIncomeBg.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.bgColor))
 
                 tabExpense.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                tabIncome.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                tabIncome.setTextColor(ContextCompat.getColor(requireContext(), R.color.text1))
             }
         }
 
@@ -203,19 +201,36 @@ class AddTransactionFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupAccountDropdown() {
-        db.accountDao().getAllAccounts().observe(viewLifecycleOwner, { accounts ->
-            accountList = accounts
-            val accountNames = accounts.map { it.name }
-            val adapter = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                accountNames
-            )
+        // Gunakan query baru untuk hanya mendapatkan akun aset
+        db.accountDao().getAssetAccounts().observe(viewLifecycleOwner, { assetAccounts ->
+            // Simpan daftar akun aset ini untuk digunakan nanti
+            accountList = assetAccounts
+            val accountNames = assetAccounts.map { it.name }
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, accountNames)
             etAccount.setAdapter(adapter)
+            // ======================
+
+            // Cari akun "Cash" di antara akun aset
+            val cashAccount = accountList.find { it.name.equals("Cash", ignoreCase = true) }
+            if (cashAccount != null) {
+                // Set default jika ditemukan
+                etAccount.setText(cashAccount.name, false)
+                selectedAccountId = cashAccount.id
+            } else if (assetAccounts.isNotEmpty()) {
+                // Jika Cash tidak ada TAPI ada akun aset lain, pilih yang pertama
+                etAccount.setText(assetAccounts[0].name, false)
+                selectedAccountId = assetAccounts[0].id
+            } else {
+                // Jika tidak ada akun aset sama sekali
+                etAccount.setText("")
+                selectedAccountId = -1L
+                // Mungkin tambahkan pesan error atau nonaktifkan tombol simpan
+            }
         })
 
         etAccount.setOnItemClickListener { parent, _, position, _ ->
             val selectedName = parent.getItemAtPosition(position) as String
+            // Dapatkan ID dari akun yang dipilih (pasti akun aset)
             selectedAccountId = accountList.find { it.name == selectedName }?.id ?: -1L
         }
     }

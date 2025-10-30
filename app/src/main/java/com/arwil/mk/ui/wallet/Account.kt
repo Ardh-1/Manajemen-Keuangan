@@ -12,6 +12,9 @@ data class Account(
     val id: Long = 0L,
     val name: String,
     val initialBalance: Double,
-    val accountType: String,
-    val iconResId: Int
+    val accountType: String?,
+    val iconResId: Int,
+    val isDebtAccount: Boolean,
+    val dueDate: Long? = null,
+    val reminderDaysBefore: Int? = null
 ) : Parcelable

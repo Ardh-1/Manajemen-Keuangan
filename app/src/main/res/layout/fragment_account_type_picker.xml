@@ -3,14 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/bgColor">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pilih Jenis Akun"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/text1"
         android:layout_marginBottom="16dp"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_account_types"

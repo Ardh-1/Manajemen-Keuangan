@@ -232,10 +232,12 @@ class ReportsFragment : Fragment() {
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.granularity = 1f
         xAxis.setDrawGridLines(false)
+        xAxis.textColor = ContextCompat.getColor(requireContext(), R.color.text1)
 
         // Konfigurasi Sumbu Y
         val leftAxis = lineChart.axisLeft
         leftAxis.setDrawGridLines(true)
+        leftAxis.textColor = ContextCompat.getColor(requireContext(), R.color.text1)
         leftAxis.axisMinimum = 0f
         leftAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {

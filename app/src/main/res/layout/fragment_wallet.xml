@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F2">
+    android:background="@color/bgColor">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_net_assets"
@@ -21,13 +21,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:background="@color/elemen1">
 
             <TextView
                 android:id="@+id/tv_net_assets_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Net Assets"
+                android:text="Aset Bersih"
                 android:alpha="0.7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +37,7 @@
                 android:id="@+id/tv_net_assets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:textColor="@color/text1"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +48,7 @@
                 android:id="@+id/tv_assets_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Assets"
+                android:text="Aset"
                 android:alpha="0.7"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_net_assets"
@@ -67,7 +68,7 @@
                 android:id="@+id/tv_debts_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Debts"
+                android:text="Hutang"
                 android:alpha="0.7"
                 app:layout_constraintStart_toStartOf="@id/guideline_vertical_50"
                 app:layout_constraintTop_toTopOf="@id/tv_assets_label" />
@@ -101,23 +102,71 @@
         android:layout_marginTop="10dp"
         android:text="Tambah Akun/Dompet Baru"
         app:icon="@drawable/ic_add"
+        app:iconTint="@color/white"
+        android:textColor="@color/white"
         app:iconSize="18dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_net_assets" />
+        app:layout_constraintTop_toBottomOf="@id/card_net_assets"
+        app:cornerRadius="12dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_accounts"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:clipToPadding="false"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="88dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_add_account"
-        tools:listitem="@layout/item_account" />
+        app:layout_constraintTop_toBottomOf="@id/btn_add_account">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="88dp">
+
+            <TextView
+                android:id="@+id/tv_asset_accounts_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Akun/Dompet Aset"
+                android:textColor="@color/text1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="16dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_asset_accounts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
+                tools:listitem="@layout/item_account" />
+
+            <TextView
+                android:id="@+id/tv_debt_accounts_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Akun/Dompet Hutang"
+                android:textColor="@color/text1"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="24dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_debt_accounts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
+                tools:listitem="@layout/item_account" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
