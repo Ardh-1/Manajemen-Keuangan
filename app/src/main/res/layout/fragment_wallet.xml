@@ -149,7 +149,7 @@
                 android:id="@+id/tv_debt_accounts_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Akun/Dompet Hutang"
+                android:text="Akun Hutang"
                 android:textColor="@color/text1"
                 android:textSize="18sp"
                 android:textStyle="bold"
